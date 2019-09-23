@@ -5,6 +5,7 @@
 #include <string.h>
 
 #define MAX_FUNCIONARIOS 100
+#define MAX 50
 
 typedef struct funcionario {
     char* nome;
@@ -15,7 +16,10 @@ typedef struct funcionario {
 }Funcionario;
 
 typedef struct func_requisition {
-    Funcionario* func;
+    char nome[MAX];
+    char departamento[MAX];
+    char cpf[MAX];
+    unsigned int idade;
     unsigned int req_type;
 }func_req;
 
