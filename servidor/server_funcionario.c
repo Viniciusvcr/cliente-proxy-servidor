@@ -12,6 +12,7 @@
 
 #define WRITE 1
 #define READ 0
+#define ERROR -1
 #define MAXLEN 50
 
 #define Pipe int
@@ -21,14 +22,18 @@
 #define GET 0
 
 Funcionario* handle_req(func_req* req) {
-    printf("HANDLE_REQ");
+    printf("HANDLE_REQ\n");
     switch (req->req_type) {
         case CREATE:
-            return funcionario_create(req->func->nome, req->func->departamento, req->func->cpf, req->func->idade);
+            printf("CREATE\n");
+            return funcionario_create(req->nome, req->departamento, req->cpf, req->idade);
         break;
 
         case GET:
-            return funcionario_get(req->func->cpf);
+            printf("GET\n");
+            Funcionario* res = funcionario_get(req->cpf);
+            printf("%p\n", res);
+            return res;
         break;
 
         default:
@@ -90,31 +95,53 @@ int main(int argc, char const *argv[]){
         exit(EXIT_FAILURE);
     }
 
-    ;
     printf("Ouvindo na porta %d\n", PORT);
-    while (1) {
-        (new_socket = accept(server_fd, (struct sockaddr *)&address, (socklen_t*)&addrlen));
+    while ((new_socket = accept(server_fd, (struct sockaddr *)&address, (socklen_t*)&addrlen)) > 0) {
         pid = fork();
         if (pid == 0) {
-            printf("Processo filho\n");
-            func_req* req_buffer;
-            int v = read(new_socket, req_buffer, sizeof(func_req));
-            printf("%p, %d", req_buffer->func, req_buffer->req_type);
-            Funcionario* res = handle_req(req_buffer);
-            v = write(com_pipe[WRITE], res, sizeof(Funcionario));
-            printf("%d\n", v);
-            exit(EXIT_SUCCESS);
-        } else {
-            // wait(NULL);
-            // printf("Processo pai\n");
-            // buffer = NULL;
-            // if (read(com_pipe[READ], buffer, sizeof(Funcionario)) > 0) {
-            //     printf("%p", buffer);
-            //     send(new_socket, buffer, sizeof(Funcionario), 0);
-            // } else {
-            //     char* message = "Falha na requisição";
-            //     send(new_socket, message, strlen(message), 0);
-            // }
+            func_req req_buffer;
+            int v = read(new_socket, &req_buffer, sizeof(func_req));
+            if (v < 0) {
+                write(new_socket, "REQ_FAILED", 11);
+            } else {
+                func_req res;
+                if (req_buffer.req_type == WRITE) {
+                    Funcionario* handled = handle_req(&req_buffer);
+                    
+                    if (handled != NULL) {
+                        strcpy(res.cpf, handled->cpf);
+                        strcpy(res.departamento, handled->departamento);
+                        strcpy(res.nome, handled->nome);
+                        res.idade = handled->idade;
+                        res.req_type = 200;
+
+                        printf("Novo funcionário!\n");
+                        printf("\tNome        : %s\n", handled->nome);
+                        printf("\tDepartamento: %s\n", handled->departamento);
+                        printf("\tCPF         : %s\n", handled->cpf);
+                        printf("\tIdade       : %d\n", handled->idade);
+                        printf("\tID          : %d\n", handled->id);
+                    } else {
+                        res.req_type = 500;
+                        // res.message = "Falha interna de servidor"
+                    }
+                }else if (req_buffer.req_type == READ) {
+                    printf("%s\n", req_buffer.cpf);
+                    Funcionario* handled = handle_req(&req_buffer);
+
+                    if (handled == NULL) {
+                        res.req_type = 404;
+                        // res.message = "Usuário não encontrado"
+                    } else {
+                        strcpy(res.cpf, handled->cpf);
+                        strcpy(res.departamento, handled->departamento);
+                        strcpy(res.nome, handled->nome);
+                        res.idade = handled->idade;
+                        res.req_type = 200;
+                    }
+                }
+                write(new_socket, &res, sizeof(res));
+            }
         }
     }
 }
