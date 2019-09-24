@@ -10,11 +10,11 @@ SRC_TEST_FUNCIONARIOS=$(TEST_MODEL)/test_funcionario.c
 servers: 
 	@$(CC) $(SRC_FUNCIONARIOS) $(SERVER_FUNCIONARIOS) -o $(EXEC_FUNCIONARIOS).out
 
-test_funcionario:
-	@$(CC) $(SRC_FUNCIONARIOS) $(SRC_TEST_FUNCIONARIOS) -o $(TEST_MODEL)/test_funcionario.out
+test_model_funcionario:
+	@$(CC) $(SRC_FUNCIONARIOS) $(SRC_TEST_FUNCIONARIOS) -o test_model_funcionario.out
 
-test_funcionario_server:
-	@$(CC) $(TEST_MODEL)/server_test.c $(SRC_FUNCIONARIOS) -o test_funcionario_server.out
+test_server_funcionario:
+	@$(CC) $(TEST_MODEL)/server_test.c $(SRC_FUNCIONARIOS) -o test_server_funcionario.out
 
 clean:
 	rm -rf *.out $(TEST_MODEL)/*.out
