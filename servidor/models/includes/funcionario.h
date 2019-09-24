@@ -5,23 +5,30 @@
 #include <string.h>
 
 #define MAX_FUNCIONARIOS 100
-#define MAX 50
+#define STR_MAX 50
 
 typedef struct funcionario {
-    char* nome;
-    char* departamento;
-    char* cpf;
+    char nome[STR_MAX];
+    char departamento[STR_MAX];
+    char cpf[STR_MAX];
     unsigned int idade;
     unsigned int id;
 }Funcionario;
 
 typedef struct func_requisition {
-    char nome[MAX];
-    char departamento[MAX];
-    char cpf[MAX];
+    char nome[STR_MAX];
+    char departamento[STR_MAX];
+    char cpf[STR_MAX];
     unsigned int idade;
-    unsigned int req_type;
+    unsigned int req_method;
+    char* model_name;
 }func_req;
+
+typedef struct func_response {
+    Funcionario response_model;
+    unsigned int status;
+    char error_message[STR_MAX];
+}func_res;
 
 Funcionario** funcionarios_init();
 Funcionario* funcionario_create(char* nome, char* departamento, char* cpf, unsigned int idade);

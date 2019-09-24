@@ -7,6 +7,7 @@
 #include <netinet/in.h> 
 #include <string.h>
 #include "models/includes/funcionario.h"
+#include "includes/req_methods.h"
 
 #define PORT 8080
 
@@ -17,29 +18,6 @@
 
 #define Pipe int
 #define PID pid_t
-
-#define CREATE 1
-#define GET 0
-
-Funcionario* handle_req(func_req* req) {
-    printf("HANDLE_REQ\n");
-    switch (req->req_type) {
-        case CREATE:
-            printf("CREATE\n");
-            return funcionario_create(req->nome, req->departamento, req->cpf, req->idade);
-        break;
-
-        case GET:
-            printf("GET\n");
-            Funcionario* res = funcionario_get(req->cpf);
-            printf("%p\n", res);
-            return res;
-        break;
-
-        default:
-            return NULL;
-    }
-}
 
 int main(int argc, char const *argv[]){
     PID pid;
@@ -100,47 +78,43 @@ int main(int argc, char const *argv[]){
         pid = fork();
         if (pid == 0) {
             func_req req_buffer;
+            func_res response;
+
             int v = read(new_socket, &req_buffer, sizeof(func_req));
             if (v < 0) {
-                write(new_socket, "REQ_FAILED", 11);
+                strcpy(response.error_message, "Internal Server Error");
+                response.status = 500;
             } else {
-                func_req res;
-                if (req_buffer.req_type == WRITE) {
-                    Funcionario* handled = handle_req(&req_buffer);
+                if (req_buffer.req_method == GET) {
+                    Funcionario* handled = funcionario_get(req_buffer.cpf);
                     
                     if (handled != NULL) {
-                        strcpy(res.cpf, handled->cpf);
-                        strcpy(res.departamento, handled->departamento);
-                        strcpy(res.nome, handled->nome);
-                        res.idade = handled->idade;
-                        res.req_type = 200;
-
-                        printf("Novo funcionário!\n");
-                        printf("\tNome        : %s\n", handled->nome);
-                        printf("\tDepartamento: %s\n", handled->departamento);
-                        printf("\tCPF         : %s\n", handled->cpf);
-                        printf("\tIdade       : %d\n", handled->idade);
-                        printf("\tID          : %d\n", handled->id);
+                        strcpy(response.response_model.cpf, handled->cpf);
+                        strcpy(response.response_model.departamento, handled->departamento);
+                        strcpy(response.response_model.nome, handled->nome);
+                        response.response_model.idade = handled->idade;
+                        response.response_model.id = handled->id;
+                        response.status = 200;
                     } else {
-                        res.req_type = 500;
-                        // res.message = "Falha interna de servidor"
+                        response.status = 404;
+                        strcpy(response.error_message, "Usuario nao encontrado");
                     }
-                }else if (req_buffer.req_type == READ) {
-                    printf("%s\n", req_buffer.cpf);
-                    Funcionario* handled = handle_req(&req_buffer);
+                }else if (req_buffer.req_method == POST) {
+                    Funcionario* handled = funcionario_create(req_buffer.nome, req_buffer.departamento, req_buffer.cpf, req_buffer.idade);
 
                     if (handled == NULL) {
-                        res.req_type = 404;
-                        // res.message = "Usuário não encontrado"
+                        response.status = 500;
+                        strcpy(response.error_message, "Usuário não encontrado");
                     } else {
-                        strcpy(res.cpf, handled->cpf);
-                        strcpy(res.departamento, handled->departamento);
-                        strcpy(res.nome, handled->nome);
-                        res.idade = handled->idade;
-                        res.req_type = 200;
+                        strcpy(response.response_model.cpf, handled->cpf);
+                        strcpy(response.response_model.departamento, handled->departamento);
+                        strcpy(response.response_model.nome, handled->nome);
+                        response.response_model.idade = handled->idade;
+                        response.response_model.id = handled->id;
+                        response.status = 200;
                     }
                 }
-                write(new_socket, &res, sizeof(res));
+                write(new_socket, &response, sizeof(func_res));
             }
         }
     }

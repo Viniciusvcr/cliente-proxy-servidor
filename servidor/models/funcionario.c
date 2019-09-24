@@ -10,10 +10,6 @@ Funcionario* funcionario_create(char* nome, char* departamento, char* cpf, unsig
     static int ID = 0;
     Funcionario* newFuncionario = (Funcionario*)malloc(sizeof(Funcionario));
 
-    newFuncionario->nome = (char*)malloc(sizeof(char) * strlen(nome));
-    newFuncionario->departamento = (char*)malloc(sizeof(char) * strlen(departamento));
-    newFuncionario->cpf = (char*)malloc(sizeof(char) * strlen(cpf));
-
     strcpy(newFuncionario->nome, nome);
     strcpy(newFuncionario->departamento, departamento);
     strcpy(newFuncionario->cpf, cpf);

@@ -6,6 +6,7 @@
 #include <arpa/inet.h> 
 #include <unistd.h> 
 #include "../includes/funcionario.h"
+#include "../../includes/req_methods.h"
 
 #define PORT 8080
 #define LOCALHOST "127.0.0.1"
@@ -21,19 +22,19 @@ int main(int argc, char const *argv[]){
     func_req req;
 
     do {
-        printf("[1] Cadastrar");
-        printf("[2] Buscar");
-        printf("[0] Sair");
+        printf("[1] Cadastrar\n");
+        printf("[2] Buscar\n");
+        printf("[0] Sair\n");
         scanf("%d", &escolha);
 
         switch (escolha) {
-
             case 1:
+                printf("POST\n");
                 strcpy(req.cpf, cpf);
                 strcpy(req.departamento, departamento);
                 req.idade = idade;
                 strcpy(req.nome, nome);
-                req.req_type = 1;
+                req.req_method = POST;
 
                 if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) { 
                     perror("\n Socket creation error \n"); 
@@ -59,23 +60,26 @@ int main(int argc, char const *argv[]){
                     printf("Message sent\n");
                 }
                 
-                func_req buffer;
-                read(sock, &buffer, sizeof(func_req));
-                printf("%d\n", buffer.req_type);
-                if (buffer.req_type != 200) {
-                    printf("%d\n", buffer.req_type);
-                } else if (buffer.req_type == 200) {
-                    printf("\tNome        : %s\n", buffer.nome);
-                    printf("\tDepartamento: %s\n", buffer.departamento);
-                    printf("\tCPF         : %s\n", buffer.cpf);
-                    printf("\tIdade       : %d\n", buffer.idade);
-                    printf("\tReq_type    : %d\n", buffer.req_type);
+                func_res response;
+                read(sock, &response, sizeof(func_res));
+                if (response.status == 200) {
+                    printf("Response:\n");
+                    printf("\tNome        : %s\n", response.response_model.nome);
+                    printf("\tDepartamento: %s\n", response.response_model.departamento);
+                    printf("\tCPF         : %s\n", response.response_model.cpf);
+                    printf("\tIdade       : %d\n", response.response_model.idade);
+                    printf("\tID          : %d\n", response.response_model.id);
+                    printf("%d\n", response.status);
+                } else {
+                    printf("Status de erro: %d", response.status);
+                    printf("Mensagem: %s", response.error_message);
                 }
             break;
 
             case 2:
+                printf("GET\n");
                 strcpy(req.cpf, cpf);
-                req.req_type = 0;
+                req.req_method = GET;
 
                 if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) { 
                     perror("\n Socket creation error \n"); 
@@ -101,17 +105,18 @@ int main(int argc, char const *argv[]){
                     printf("Message sent\n");
                 }
                 
-                func_req get;
+                func_res get;
                 read(sock, &get, sizeof(func_req));
-                printf("%d\n", get.req_type);
-                if (get.req_type != 200) {
-                    printf("%d\n", get.req_type);
-                } else if (get.req_type == 200) {
-                    printf("\tNome        : %s\n", get.nome);
-                    printf("\tDepartamento: %s\n", get.departamento);
-                    printf("\tCPF         : %s\n", get.cpf);
-                    printf("\tIdade       : %d\n", get.idade);
-                    printf("\tReq_type    : %d\n", get.req_type);
+                if (get.status == 200) {
+                    printf("\tNome        : %s\n", get.response_model.nome);
+                    printf("\tDepartamento: %s\n", get.response_model.departamento);
+                    printf("\tCPF         : %s\n", get.response_model.cpf);
+                    printf("\tIdade       : %d\n", get.response_model.idade);
+                    printf("\tID          : %d\n", get.response_model.id);
+                    printf("%d\n", get.status);
+                } else {
+                    printf("Status de erro: %d\n", get.status);
+                    printf("Mensagem: %s\n", get.error_message);
                 }
             break;
         }
