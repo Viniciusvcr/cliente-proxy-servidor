@@ -1,33 +1,32 @@
 #include "includes/funcionario.h"
 
-Funcionario** funcionarios_init() {
-    funcionario_database = (Funcionario**)malloc(sizeof(Funcionario*)*MAX_FUNCIONARIOS);
+Funcionario* funcionarios_init() {
+    database = (Database*)malloc(sizeof(Database));
+    memset(database, 0, sizeof(Database));
+    database->last_id = 0;
 
-    return funcionario_database;
+    return database->db;
 }
 
 Funcionario* funcionario_create(char* nome, char* departamento, char* cpf, unsigned int idade) {
-    static int ID = 0;
-    Funcionario* newFuncionario = (Funcionario*)malloc(sizeof(Funcionario));
+    Funcionario newFuncionario;
+    
+    strcpy(newFuncionario.nome, nome);
+    strcpy(newFuncionario.departamento, departamento);
+    strcpy(newFuncionario.cpf, cpf);
+    newFuncionario.idade = idade;
+    newFuncionario.id = database->last_id++;
 
-    strcpy(newFuncionario->nome, nome);
-    strcpy(newFuncionario->departamento, departamento);
-    strcpy(newFuncionario->cpf, cpf);
-    newFuncionario->idade = idade;
-    newFuncionario->id = ID++;
+    database->db[newFuncionario.id] = newFuncionario;
 
-    funcionario_database[newFuncionario->id] = newFuncionario;
-
-    return newFuncionario;
+    return &database->db[newFuncionario.id];
 }
 
 Funcionario* funcionario_get(char* cpf) {
     for (int i = 0; i < MAX_FUNCIONARIOS; i++) {
-        if (funcionario_database[i] != NULL) {
-            if (strcmp(funcionario_database[i]->cpf, cpf) == 0) {
-                return funcionario_database[i];
-            }
-        } else return NULL;
+        if (strcmp(database->db[i].cpf, cpf) == 0) {
+            return &database->db[i];
+        }
     }
 
     return NULL;

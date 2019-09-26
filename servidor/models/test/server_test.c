@@ -14,9 +14,9 @@
 int main(int argc, char const *argv[]){
     int sock = 0, escolha;
     struct sockaddr_in serv_addr; 
-    char* nome = "Vinícius";
-    char* departamento = "TI";
-    char* cpf = "11243593970";
+    char nome[STR_MAX];
+    char departamento[STR_MAX];
+    char cpf[STR_MAX];
     unsigned int idade = 20;
     Funcionario* newFuncionario = (Funcionario*)malloc(sizeof(Funcionario));
     func_req req;
@@ -26,13 +26,19 @@ int main(int argc, char const *argv[]){
         printf("[2] Buscar\n");
         printf("[0] Sair\n");
         scanf("%d", &escolha);
-
         switch (escolha) {
             case 1:
                 printf("POST\n");
+                getchar();
+                fgets(nome, STR_MAX, stdin);
+                fgets(departamento, STR_MAX, stdin);
+                fgets(cpf, STR_MAX, stdin);
+                nome[strlen(nome) - 1] = '\0';
+                departamento[strlen(departamento) - 1] = '\0';
+                cpf[strlen(cpf) - 1] = '\0';
+                req.idade = idade++;
                 strcpy(req.cpf, cpf);
                 strcpy(req.departamento, departamento);
-                req.idade = idade;
                 strcpy(req.nome, nome);
                 req.req_method = POST;
 
@@ -78,6 +84,9 @@ int main(int argc, char const *argv[]){
 
             case 2:
                 printf("GET\n");
+                getchar();
+                fgets(cpf, STR_MAX, stdin);
+                cpf[strlen(cpf) - 1] = '\0';
                 strcpy(req.cpf, cpf);
                 req.req_method = GET;
 

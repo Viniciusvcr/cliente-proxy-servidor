@@ -73,6 +73,7 @@ int main(int argc, char const *argv[]){
         exit(EXIT_FAILURE);
     }
 
+    write(com_pipe[WRITE], database, sizeof(Database));
     printf("Ouvindo na porta %d\n", PORT);
     while ((new_socket = accept(server_fd, (struct sockaddr *)&address, (socklen_t*)&addrlen)) > 0) {
         pid = fork();
@@ -80,7 +81,9 @@ int main(int argc, char const *argv[]){
             func_req req_buffer;
             func_res response;
 
+            read(com_pipe[READ], database, sizeof(Database));
             int v = read(new_socket, &req_buffer, sizeof(func_req));
+
             if (v < 0) {
                 strcpy(response.error_message, "Internal Server Error");
                 response.status = 500;
@@ -116,6 +119,7 @@ int main(int argc, char const *argv[]){
                 }
                 write(new_socket, &response, sizeof(func_res));
             }
+            write(com_pipe[WRITE], database, sizeof(Database));
             return EXIT_SUCCESS;
         }
     }
