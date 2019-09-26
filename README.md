@@ -12,12 +12,12 @@ Repositório do trabalho de Sistemas Operacionais (UEM - 2019)
     - Sistema CRUD de um supermercado
         - Pode-se cadastrar e recuperar Funcionários do supermercado
         - Pode-se cadastrar e recuperar Produtos vendidos no supermercado
-        - Pode-se recuperar os Fornecedores do supermercado
+        - Pode-se cadastrar e recuperar os Fornecedores do supermercado
         - Cada um dos modelos (Funcionário, Produto e Fornecedor) serão armazenados em memória, e em servidores diferentes
         - Cada servidor usará um processo filho, criado por Fork para acessar sua base de dados
-        - O modelo Funcionário usará Pipe e semáforo
-        - O modelo Produto usará Memória compartilhada
-        - O modelo Fornecedor usará FIFO e Semáforo
+        - O modelo Funcionário usará Pipe
+        - O modelo Produto usará Memória compartilhada e Semáforo
+        - O modelo Fornecedor usará FIFO
 
 - Desenvolvedores
     - [Caio Eduardo Kikuti Machado](https://github.com/Caiokikuti)
