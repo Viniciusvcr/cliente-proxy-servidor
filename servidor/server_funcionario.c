@@ -97,14 +97,14 @@ int main(int argc, char const *argv[]){
                         response.status = 200;
                     } else {
                         response.status = 404;
-                        strcpy(response.error_message, "Usuario nao encontrado");
+                        strcpy(response.error_message, "Usuário não encontrado\n");
                     }
                 }else if (req_buffer.req_method == POST) {
                     Funcionario* handled = funcionario_create(req_buffer.nome, req_buffer.departamento, req_buffer.cpf, req_buffer.idade);
 
                     if (handled == NULL) {
                         response.status = 500;
-                        strcpy(response.error_message, "Usuário não encontrado");
+                        strcpy(response.error_message, "Internal Server Error");
                     } else {
                         strcpy(response.response_model.cpf, handled->cpf);
                         strcpy(response.response_model.departamento, handled->departamento);
@@ -116,6 +116,7 @@ int main(int argc, char const *argv[]){
                 }
                 write(new_socket, &response, sizeof(func_res));
             }
+            return EXIT_SUCCESS;
         }
     }
 }

@@ -106,7 +106,7 @@ int main(int argc, char const *argv[]){
                 }
                 
                 func_res get;
-                read(sock, &get, sizeof(func_req));
+                read(sock, &get, sizeof(func_res));
                 if (get.status == 200) {
                     printf("\tNome        : %s\n", get.response_model.nome);
                     printf("\tDepartamento: %s\n", get.response_model.departamento);
