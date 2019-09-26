@@ -1,36 +1,31 @@
 #include "includes/fornecedor.h"
 
-Fornecedor** fornecedor_init() {
-    fornecedor_database = (Fornecedor**)malloc(sizeof(Fornecedor*)*MAX_FORNECEDORES);
+Fornecedor* fornecedor_init() {
+    database = (Database*)malloc(sizeof(Database));
+    memset(database, 0, sizeof(Database));
+    database->last_id = 0;
 
-    return fornecedor_database;
+    return database->db;
 }
 
 Fornecedor* fornecedor_create(char* nome_fantasia, char* cnpj, char* telefone) {
-    static int ID = 0;
-    Fornecedor* newFornecedor = (Fornecedor*)malloc(sizeof(Fornecedor));
+    Fornecedor newFornecedor;
 
-    newFornecedor->nome_fantasia = (char*)malloc(sizeof(char) * strlen(nome_fantasia));
-    newFornecedor->cnpj = (char*)malloc(sizeof(char) * strlen(cnpj));
-    newFornecedor->telefone = (char*)malloc(sizeof(char) * strlen(telefone));
+    strcpy(newFornecedor.nome_fantasia, nome_fantasia);
+    strcpy(newFornecedor.cnpj, cnpj);
+    strcpy(newFornecedor.telefone, telefone);
+    newFornecedor.id = database->last_id++;
 
-    strcpy(newFornecedor->nome_fantasia, nome_fantasia);
-    strcpy(newFornecedor->cnpj, cnpj);
-    strcpy(newFornecedor->telefone, telefone);
-    newFornecedor->id = ID++;
+    database->db[newFornecedor.id] = newFornecedor;
 
-    fornecedor_database[newFornecedor->id] = newFornecedor;
-
-    return newFornecedor;
+    return &database->db[newFornecedor.id];
 }
 
 Fornecedor* fornecedor_get(char* cnpj) {
     for (int i = 0; i < MAX_FORNECEDORES; i++) {
-        if (fornecedor_database[i] != NULL) {
-            if (strcmp(fornecedor_database[i]->cnpj, cnpj) == 0) {
-                return fornecedor_database[i];
-            }
-        } else return NULL;
+        if (strcmp(database->db[i].cnpj, cnpj) == 0) {
+            return &database->db[i];
+        }
     }
 
     return NULL;

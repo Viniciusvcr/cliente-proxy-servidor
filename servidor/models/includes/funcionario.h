@@ -26,7 +26,6 @@ typedef struct func_requisition {
     char cpf[STR_MAX];
     unsigned int idade;
     unsigned int req_method;
-    char* model_name;
 }func_req;
 
 typedef struct func_response {

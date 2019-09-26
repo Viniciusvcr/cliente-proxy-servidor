@@ -5,25 +5,37 @@
 #include <string.h>
 
 #define MAX_FORNECEDORES 10
-#define MAX 50
+#define STR_MAX 50
 
 typedef struct fornecedor {
-    char* nome_fantasia;
-    char* cnpj;
-    char* telefone;
+    char nome_fantasia[STR_MAX];
+    char cnpj[STR_MAX];
+    char telefone[STR_MAX];
     unsigned int id;
 }Fornecedor;
 
+typedef struct forn_database {
+    Fornecedor db[MAX_FORNECEDORES];
+    unsigned int last_id;
+}Database;
+
 typedef struct forn_requisition {
-    char nome_fantasia[MAX];
-    char cnpj[MAX];
-    char telefone[MAX];
+    char nome_fantasia[STR_MAX];
+    char cnpj[STR_MAX];
+    char telefone[STR_MAX];
+    unsigned int req_method;
 }forn_req;
 
-Fornecedor** fornecedor_init();
+typedef struct forn_response {
+    Fornecedor response_model;
+    unsigned int status;
+    char error_message[STR_MAX];
+}forn_res;
+
+Fornecedor* fornecedor_init();
 Fornecedor* fornecedor_create(char* nome_fantasia, char* cnpj, char* telefone);
 Fornecedor* fornecedor_get(char* cnpj);
 
-Fornecedor** fornecedor_database;
+Database* database;
 
 #endif

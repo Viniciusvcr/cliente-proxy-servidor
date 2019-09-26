@@ -1,30 +1,31 @@
 #include "includes/produto.h"
 
-Produto** produtos_init(){
-    produto_database = (Produto**)malloc(sizeof(Produto*)*MAX_PRODUTOS);
-    return produto_database;
+Produto* produtos_init(){
+    database = (Database*)malloc(sizeof(Database));
+    memset(database, 0, sizeof(Database));
+    database->last_id = 0;
+
+    return database->db;
 }
 
 Produto* produto_create(char* nome,unsigned int valor, unsigned int qtdEstoque){
-    static int ID = 0;
-    Produto* newProduto = (Produto*)malloc(sizeof(Produto));
-    newProduto->nome = (char*)malloc(sizeof(char) * strlen(nome));
-    strcpy(newProduto->nome, nome);
-    newProduto->id = ID++;
-    newProduto->qdtEstoque = qtdEstoque;
-    newProduto->valor = valor;
+    Produto newProduto;
 
-    produto_database[newProduto->id] = newProduto;
-    return newProduto;
+    strcpy(newProduto.nome, nome);
+    newProduto.id = database->last_id++;
+    newProduto.qdtEstoque = qtdEstoque;
+    newProduto.valor = valor;
+
+    database->db[newProduto.id] = newProduto;
+    return &database->db[newProduto.id];
 }
 
 Produto* produto_get(unsigned int id){
     for(int i = 0; i<MAX_PRODUTOS;i++){
-        if(produto_database[i] != NULL){
-            if(produto_database[i]->id == id){
-                return produto_database[i];
-            }
-        }else return NULL;
+        if(database->db[i].id == id){
+            return &database->db[i];
+        }
     }
+
     return NULL;
 }

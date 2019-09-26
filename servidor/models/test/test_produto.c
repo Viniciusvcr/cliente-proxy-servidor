@@ -22,11 +22,11 @@ int main(){
         assert(buffer->id == 0);
 
 
-        printf("Criacao do produto funcionando\n");
-        printf("\tNome        : %s\n", buffer->nome);
-        printf("\tValor        : %d\n", buffer->valor);
-        printf("\tQuantidade em estoque        : %d\n", buffer->qdtEstoque);
-        printf("\tID        : %d\n", buffer->id);
+        printf("Criação do produto funcionando\n");
+        printf("\tNome                 : %s\n", buffer->nome);
+        printf("\tValor                : %d\n", buffer->valor);
+        printf("\tQuantidade em estoque: %d\n", buffer->qdtEstoque);
+        printf("\tID                   : %d\n", buffer->id);
     }else{
         printf("Falha na criação de produtos\n");
     }
@@ -42,11 +42,11 @@ int main(){
         assert(buffer->id == 0);
 
 
-        printf("Criacao do produto funcionando\n");
-        printf("\tNome        : %s\n", buffer->nome);
-        printf("\tValor        : %d\n", buffer->valor);
-        printf("\tQuantidade em estoque        : %d\n", buffer->qdtEstoque);
-        printf("\tID        : %d\n", buffer->id);
+        printf("Recuperação do produto funcionando\n");
+        printf("\tNome                 : %s\n", buffer->nome);
+        printf("\tValor                : %d\n", buffer->valor);
+        printf("\tQuantidade em estoque: %d\n", buffer->qdtEstoque);
+        printf("\tID                   : %d\n", buffer->id);
     }else{
         printf("Falha na criação de produtos\n");
     }

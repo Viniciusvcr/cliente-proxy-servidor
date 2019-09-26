@@ -5,27 +5,37 @@
 #include <string.h>
 
 #define MAX_PRODUTOS 100
-#define MAX 50
+#define STR_MAX 50
 
 typedef struct produto {
-    char* nome;
+    char nome[STR_MAX];
     unsigned int valor;
-    unsigned int id;
     unsigned int qdtEstoque;
+    unsigned int id;
 }Produto;
 
-typedef struct func_requisition {
-    char nome[MAX];
-    unsigned int valor;
-    unsigned int id;
-    unsigned int qtdEstoque;
-    unsigned int req_type;
-}func_req;
+typedef struct prod_database {
+    Produto db[MAX_PRODUTOS];
+    unsigned int last_id;
+}Database;
 
-Produto** produtos_init();
+typedef struct prod_requisition {
+    char nome[STR_MAX];
+    unsigned int valor;
+    unsigned int qtdEstoque;
+    unsigned int req_method;
+}prod_req;
+
+typedef struct prod_response {
+    Produto response_model;
+    unsigned int status;
+    char error_message[STR_MAX];
+}prod_res;
+
+Produto* produtos_init();
 Produto* produto_create(char* nome,unsigned int valor, unsigned int qtdEstoque);
 Produto* produto_get(unsigned int id);
 
-Produto** produto_database;
+Database* database;
 
 #endif
