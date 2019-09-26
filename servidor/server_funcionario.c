@@ -81,6 +81,9 @@ int main(int argc, char const *argv[]){
             func_req req_buffer;
             func_res response;
 
+            memset(&req_buffer, 0, sizeof(func_req));
+            memset(&response, 0, sizeof(func_res));
+
             read(com_pipe[READ], database, sizeof(Database));
             int v = read(new_socket, &req_buffer, sizeof(func_req));
 
