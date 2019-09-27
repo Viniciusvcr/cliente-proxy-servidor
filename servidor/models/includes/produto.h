@@ -24,6 +24,7 @@ typedef struct prod_requisition {
     unsigned int valor;
     unsigned int qtdEstoque;
     unsigned int req_method;
+    unsigned int id;
 }prod_req;
 
 typedef struct prod_response {
