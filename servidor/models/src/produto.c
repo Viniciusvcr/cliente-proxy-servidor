@@ -8,7 +8,7 @@ Produto* produtos_init(){
     return database->db;
 }
 
-Produto* produto_create(char* nome,unsigned int valor, unsigned int qtdEstoque){
+Produto* produto_create(char* nome, unsigned int valor, unsigned int qtdEstoque){
     Produto newProduto;
 
     strcpy(newProduto.nome, nome);
