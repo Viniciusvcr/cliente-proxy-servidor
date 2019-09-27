@@ -36,19 +36,11 @@ void create_response(prod_res* response, Produto* model_response) {
 
 int main(int argc, char const *argv[]) {
     PID pid;
-    Pipe com_pipe[2];
     int server_fd, new_socket, opt = 1;
     struct sockaddr_in address;
     int addrlen = sizeof(address);
 
     printf("Iniciando servidor de produtos...\n");
-
-    if (pipe(com_pipe) < 0) {
-        perror("Failed creating pipe");
-        exit(EXIT_FAILURE);
-    } else {
-        printf("\tPipe criado\n");
-    }
 
     create_server_connection(&server_fd, PORT, &opt, &address);
 
@@ -59,7 +51,6 @@ int main(int argc, char const *argv[]) {
         exit(EXIT_FAILURE);
     }
 
-    write(com_pipe[WRITE], database, sizeof(Database));
     printf("Ouvindo na porta %d\n", PORT);
     while((new_socket = accept(server_fd, (struct sockaddr *)&address, (socklen_t*)&addrlen)) > 0) {
         pid = fork();
@@ -70,7 +61,6 @@ int main(int argc, char const *argv[]) {
             memset(&req_buffer, 0, sizeof(prod_req));
             memset(&response, 0, sizeof(prod_res));
 
-            read(com_pipe[READ], database, sizeof(Database));
             int v = read(new_socket, &req_buffer, sizeof(prod_req));
 
             if (v < 0) {
@@ -79,14 +69,13 @@ int main(int argc, char const *argv[]) {
             } else {
                 if (req_buffer.req_method == GET) {
                     Produto* handled = produto_get(req_buffer.id);
-
                     if (handled != NULL) {
                         create_response(&response, handled);
                     } else {
                         error(&response, 404, "Usuário não encontrado");
                     }
                 } else if (req_buffer.req_method == POST) {
-                    Produto* handled = produto_create(req_buffer.id, req_buffer.nome, req_buffer.qtdEstoque);
+                    Produto* handled = produto_create(req_buffer.nome, req_buffer.valor, req_buffer.qtdEstoque);
 
                     if (handled == NULL) {
                         error(&response, 500, "Internal Server Error");
@@ -96,7 +85,6 @@ int main(int argc, char const *argv[]) {
                 }
                 write(new_socket, &response, sizeof(prod_res));
             }
-            write(com_pipe[WRITE], database, sizeof(Database));
             return EXIT_SUCCESS;
         }
     }

@@ -1,8 +1,11 @@
 #include "../includes/produto.h"
 
-Produto* produtos_init(){
+Produto* produtos_init() {
     database = (Database*)malloc(sizeof(Database));
     memset(database, 0, sizeof(Database));
+    for (int i = 0; i < MAX_PRODUTOS; i++) {
+        database->db[i].id = -1;
+    }
     database->last_id = 0;
 
     return database->db;
