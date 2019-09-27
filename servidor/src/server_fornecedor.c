@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h> 
+#include <unistd.h>
+#include <fcntl.h> 
+#include <sys/stat.h> 
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <sys/wait.h>
@@ -13,6 +15,8 @@
 #define PORT 8081
 
 #define PID pid_t
+#define Fifo int
+#define FIFO_FILE "/tmp/fornecedor_fifo"
 
 const Fornecedor empty = {0};
 
@@ -32,11 +36,20 @@ void create_response(forn_res* response, Fornecedor* model_response) {
 
 int main(int argc, char const *argv[]){
     PID pid;
+    Fifo com_fifo;
     int server_fd, new_socket, opt = 1;
     struct sockaddr_in address;
     int addrlen = sizeof(address);
 
     printf("Iniciando servidor de funcionários...\n");
+
+    remove(FIFO_FILE);
+    if (mkfifo(FIFO_FILE, 0666) < 0) {
+        perror("Erro criando FIFO");
+        exit(EXIT_FAILURE);
+    } else {
+        printf("\tFIFO criado\n");
+    }
 
     create_server_connection(&server_fd, PORT, &opt, &address);
 
@@ -47,6 +60,8 @@ int main(int argc, char const *argv[]){
     }
 
     printf("Ouvindo na porta %d\n", PORT);
+    com_fifo = open(FIFO_FILE, O_RDWR | O_TRUNC);
+    write(com_fifo, database, sizeof(Database));
     while((new_socket = accept(server_fd, (struct sockaddr *)&address, (socklen_t*)&addrlen)) > 0) {
         pid = fork();
         if (pid == 0) {
@@ -55,7 +70,8 @@ int main(int argc, char const *argv[]){
 
             memset(&req_buffer, 0, sizeof(forn_req));
             memset(&response, 0, sizeof(forn_res));
-
+            
+            read(com_fifo, database, sizeof(Database));
             int v = read(new_socket, &req_buffer, sizeof(forn_req));
 
             if (v < 0) {
@@ -79,6 +95,7 @@ int main(int argc, char const *argv[]){
                     }
                 }
             }
+            write(com_fifo, database, sizeof(Database));
             write(new_socket, &response, sizeof(forn_res));
             return EXIT_SUCCESS;
         }
