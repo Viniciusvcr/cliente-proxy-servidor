@@ -14,8 +14,6 @@
 
 #define WRITE 1
 #define READ 0
-#define ERROR -1
-#define MAXLEN 50
 
 #define Pipe int
 #define PID pid_t
