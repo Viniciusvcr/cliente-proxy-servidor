@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <string.h>
-#include "../includes/fornecedor.h"
+#include "../models/includes/fornecedor.h"
 
 int main() {
     char* nome_fantasia = "Pirocao";

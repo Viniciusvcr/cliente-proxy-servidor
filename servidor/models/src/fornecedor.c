@@ -1,4 +1,4 @@
-#include "includes/fornecedor.h"
+#include "../includes/fornecedor.h"
 
 Fornecedor* fornecedor_init() {
     database = (Database*)malloc(sizeof(Database));

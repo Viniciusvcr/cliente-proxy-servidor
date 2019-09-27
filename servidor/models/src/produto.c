@@ -1,4 +1,4 @@
-#include "includes/produto.h"
+#include "../includes/produto.h"
 
 Produto* produtos_init(){
     database = (Database*)malloc(sizeof(Database));

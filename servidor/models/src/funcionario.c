@@ -1,4 +1,4 @@
-#include "includes/funcionario.h"
+#include "../includes/funcionario.h"
 
 Funcionario* funcionarios_init() {
     database = (Database*)malloc(sizeof(Database));

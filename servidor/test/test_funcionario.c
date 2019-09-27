@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <string.h>
-#include "../includes/funcionario.h"
+#include "../models/includes/funcionario.h"
 
 int main() {
     char* nome = "Vinícius Regatieri";

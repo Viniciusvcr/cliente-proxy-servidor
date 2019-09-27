@@ -6,9 +6,9 @@
 #include <sys/wait.h>
 #include <netinet/in.h> 
 #include <string.h>
-#include "models/includes/funcionario.h"
-#include "includes/req_methods.h"
-#include "includes/connector.h"
+#include "../models/includes/funcionario.h"
+#include "../includes/req_methods.h"
+#include "../includes/connector.h"
 
 #define PORT 8080
 

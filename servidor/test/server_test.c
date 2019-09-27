@@ -5,9 +5,9 @@
 #include <sys/socket.h> 
 #include <arpa/inet.h> 
 #include <unistd.h> 
-#include "../includes/funcionario.h"
-#include "../../includes/req_methods.h"
-#include "../../includes/connector.h"
+#include "../models/includes/funcionario.h"
+#include "../includes/req_methods.h"
+#include "../includes/connector.h"
 
 #define PORT 8080
 #define LOCALHOST "127.0.0.1"

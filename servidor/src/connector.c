@@ -1,4 +1,4 @@
-#include "includes/connector.h"
+#include "../includes/connector.h"
 
 void create_server_connection(int* server_fd, int port, int* opt, struct sockaddr_in* address) {
     if ((*server_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0) { 
