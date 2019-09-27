@@ -9,7 +9,7 @@
 #include "../includes/req_methods.h"
 #include "../includes/connector.h"
 
-#define PORT 8080
+#define PORT 8082
 #define LOCALHOST "127.0.0.1"
 
 int main(int argc, char const *argv[]) {

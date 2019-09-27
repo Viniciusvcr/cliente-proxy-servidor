@@ -10,7 +10,7 @@
 #include "../includes/req_methods.h"
 #include "../includes/connector.h"
 
-#define PORT 8080
+#define PORT 8082
 
 #define WRITE 1
 #define READ 0
