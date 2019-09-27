@@ -20,6 +20,23 @@
 #define Pipe int
 #define PID pid_t
 
+const Funcionario empty = {0};
+
+void error(func_res* response, unsigned int status, char* message) {
+    response->status = status;
+    strcpy(response->error_message, message);
+    response->response_model = empty;
+}
+
+void create_response(func_res* response, Funcionario* model_response) {
+    strcpy(response->response_model.cpf, model_response->cpf);
+    strcpy(response->response_model.departamento, model_response->departamento);
+    strcpy(response->response_model.nome, model_response->nome);
+    response->response_model.idade = model_response->idade;
+    response->response_model.id = model_response->id;
+    response->status = 200;
+}
+
 int main(int argc, char const *argv[]){
     PID pid;
     Pipe com_pipe[2];
@@ -68,29 +85,17 @@ int main(int argc, char const *argv[]){
                     Funcionario* handled = funcionario_get(req_buffer.cpf);
                     
                     if (handled != NULL) {
-                        strcpy(response.response_model.cpf, handled->cpf);
-                        strcpy(response.response_model.departamento, handled->departamento);
-                        strcpy(response.response_model.nome, handled->nome);
-                        response.response_model.idade = handled->idade;
-                        response.response_model.id = handled->id;
-                        response.status = 200;
+                        create_response(&response, handled);
                     } else {
-                        response.status = 404;
-                        strcpy(response.error_message, "Usuário não encontrado\n");
+                        error(&response, 404, "Usuário não encontrado");
                     }
                 }else if (req_buffer.req_method == POST) {
                     Funcionario* handled = funcionario_create(req_buffer.nome, req_buffer.departamento, req_buffer.cpf, req_buffer.idade);
 
                     if (handled == NULL) {
-                        response.status = 500;
-                        strcpy(response.error_message, "Internal Server Error");
+                        error(&response, 500, "Internal Server Error");
                     } else {
-                        strcpy(response.response_model.cpf, handled->cpf);
-                        strcpy(response.response_model.departamento, handled->departamento);
-                        strcpy(response.response_model.nome, handled->nome);
-                        response.response_model.idade = handled->idade;
-                        response.response_model.id = handled->id;
-                        response.status = 200;
+                        create_response(&response, handled);
                     }
                 }
                 write(new_socket, &response, sizeof(func_res));
