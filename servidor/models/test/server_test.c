@@ -7,6 +7,7 @@
 #include <unistd.h> 
 #include "../includes/funcionario.h"
 #include "../../includes/req_methods.h"
+#include "../../includes/connector.h"
 
 #define PORT 8080
 #define LOCALHOST "127.0.0.1"
@@ -42,23 +43,7 @@ int main(int argc, char const *argv[]){
                 strcpy(req.nome, nome);
                 req.req_method = POST;
 
-                if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) { 
-                    perror("\n Socket creation error \n"); 
-                    return -1; 
-                }
-
-                serv_addr.sin_family = AF_INET; 
-                serv_addr.sin_port = htons(PORT);
-
-                if(inet_pton(AF_INET, LOCALHOST, &serv_addr.sin_addr)<=0)  { 
-                    printf("\nInvalid address/ Address not supported \n"); 
-                    return -1; 
-                } 
-
-                if (connect(sock, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0) { 
-                    perror("\nConnection Failed \n"); 
-                    return -1; 
-                }
+                create_client_connection(&sock, PORT, &serv_addr, LOCALHOST);
 
                 if (send(sock, &req, sizeof(func_req), 0) == -1) {
                     perror("Error sending message");
@@ -90,23 +75,7 @@ int main(int argc, char const *argv[]){
                 strcpy(req.cpf, cpf);
                 req.req_method = GET;
 
-                if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) { 
-                    perror("\n Socket creation error \n"); 
-                    return -1; 
-                }
-
-                serv_addr.sin_family = AF_INET; 
-                serv_addr.sin_port = htons(PORT);
-
-                if(inet_pton(AF_INET, LOCALHOST, &serv_addr.sin_addr)<=0)  { 
-                    printf("\nInvalid address/ Address not supported \n"); 
-                    return -1; 
-                } 
-
-                if (connect(sock, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0) { 
-                    perror("\nConnection Failed \n"); 
-                    return -1; 
-                }
+                create_client_connection(&sock, PORT, &serv_addr, LOCALHOST);
 
                 if (send(sock, &req, sizeof(func_req), 0) == -1) {
                     perror("Error sending message");

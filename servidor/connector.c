@@ -31,3 +31,23 @@ void create_server_connection(int* server_fd, int port, int* opt, struct sockadd
         printf("\tListening!\n");
     }
 }
+
+void create_client_connection(int* socket_fd, int port, struct sockaddr_in* serv_addr, char* host) {
+    if ((*socket_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0) { 
+        perror("Criação do Socket falhou"); 
+        exit(EXIT_FAILURE); 
+    }
+
+    serv_addr->sin_family = AF_INET; 
+    serv_addr->sin_port = htons(port);
+
+    if(inet_pton(AF_INET, host, &serv_addr->sin_addr) <= 0)  { 
+        perror("Endereço inválido/Não suportado"); 
+        exit(EXIT_FAILURE); 
+    }
+
+    if (connect(*socket_fd, (struct sockaddr *)serv_addr, sizeof(*serv_addr)) < 0) { 
+        perror("Connection Failed"); 
+        exit(EXIT_FAILURE); 
+    }
+}

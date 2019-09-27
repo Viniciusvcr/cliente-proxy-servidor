@@ -24,7 +24,7 @@ test_model_produto:
 	@$(CC) $(SRC_PRODUTO) $(SRC_TEST_PRODUTO) -o test_model_produto.out
 
 test_server_funcionario:
-	@$(CC) $(TEST_MODEL)/server_test.c $(SRC_FUNCIONARIOS) -o test_server_funcionario.out
+	@$(CC) $(TEST_MODEL)/server_test.c $(SRC_FUNCIONARIOS) servidor/connector.c -o test_server_funcionario.out
 
 clean:
 	rm -rf *.out $(TEST_MODEL)/*.out
