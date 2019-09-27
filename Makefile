@@ -3,7 +3,7 @@ MODELS=servidor/models
 SRC_FUNCIONARIOS=servidor/models/funcionario.c
 SRC_PRODUTO=servidor/models/produto.c
 SRC_FORNECEDOR=servidor/models/fornecedor.c
-SERVER_FUNCIONARIOS=servidor/server_funcionario.c
+SERVER_FUNCIONARIOS=servidor/server_funcionario.c servidor/connector.c
 EXEC_FUNCIONARIOS=server_funcionarios
 
 TEST_MODEL=servidor/models/test
