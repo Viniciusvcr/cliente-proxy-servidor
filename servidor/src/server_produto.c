@@ -61,30 +61,32 @@ int main(int argc, char const *argv[]) {
             memset(&req_buffer, 0, sizeof(prod_req));
             memset(&response, 0, sizeof(prod_res));
 
-            int v = read(new_socket, &req_buffer, sizeof(prod_req));
+            int req_size = read(new_socket, &req_buffer, sizeof(prod_req));
 
-            if (v < 0) {
-                strcpy(response.error_message, "Internal Server Error");
-                response.status = 500;
+            if (req_size < 0) {
+                error(&response, 500, "Internal Server Error");
             } else {
-                if (req_buffer.req_method == GET) {
-                    Produto* handled = produto_get(req_buffer.id);
-                    if (handled != NULL) {
-                        create_response(&response, handled);
-                    } else {
-                        error(&response, 404, "Usuário não encontrado");
-                    }
-                } else if (req_buffer.req_method == POST) {
-                    Produto* handled = produto_create(req_buffer.nome, req_buffer.valor, req_buffer.qtdEstoque);
+                if (req_size == sizeof(prod_req)) {
+                    if (req_buffer.req_method == GET) {
+                        Produto* handled = produto_get(req_buffer.id);
+                        if (handled != NULL) {
+                            create_response(&response, handled);
+                        } else {
+                            error(&response, 404, "Produto não encontrado");
+                        }
+                    } else if (req_buffer.req_method == POST) {
+                        Produto* handled = produto_create(req_buffer.nome, req_buffer.valor, req_buffer.qtdEstoque);
 
-                    if (handled == NULL) {
-                        error(&response, 500, "Internal Server Error");
-                    } else {
-                        create_response(&response, handled);
+                        if (handled == NULL) {
+                            error(&response, 500, "Internal Server Error");
+                        } else {
+                            create_response(&response, handled);
+                        }
                     }
                 }
-                write(new_socket, &response, sizeof(prod_res));
             }
+            
+            write(new_socket, &response, sizeof(prod_res));
             return EXIT_SUCCESS;
         }
     }

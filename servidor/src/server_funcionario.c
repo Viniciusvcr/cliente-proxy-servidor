@@ -75,8 +75,7 @@ int main(int argc, char const *argv[]){
             int req_size = read(new_socket, &req_buffer, sizeof(func_req));
 
             if (req_size < 0) {
-                strcpy(response.error_message, "Internal Server Error");
-                response.status = 500;
+                error(&response, 500, "Internal Server Error");
             } else {
                 if (req_size == sizeof(func_req)) {
                     read(com_pipe[READ], database, sizeof(Database));
@@ -98,11 +97,12 @@ int main(int argc, char const *argv[]){
                             create_response(&response, handled);
                         }
                     }
-                    
+
                     write(com_pipe[WRITE], database, sizeof(Database));
-                    write(new_socket, &response, sizeof(func_res));
                 }
             }
+
+            write(new_socket, &response, sizeof(func_res));
             return EXIT_SUCCESS;
         }
     }

@@ -71,31 +71,36 @@ int main(int argc, char const *argv[]){
             memset(&req_buffer, 0, sizeof(forn_req));
             memset(&response, 0, sizeof(forn_res));
             
-            read(com_fifo, database, sizeof(Database));
-            int v = read(new_socket, &req_buffer, sizeof(forn_req));
+            int req_size = read(new_socket, &req_buffer, sizeof(forn_req));
 
-            if (v < 0) {
+            if (req_size < 0) {
                 error(&response, 500, "Internal Server Error");
             } else {
-                if (req_buffer.req_method == GET) {
-                    Fornecedor* handled = fornecedor_get(req_buffer.cnpj);
+                if (req_size == sizeof(forn_req)) {
+                    read(com_fifo, database, sizeof(Database));
 
-                    if (handled != NULL) {
-                        create_response(&response, handled);
-                    } else {
-                        error(&response, 404, "Usuário não encontrado");
-                    }
-                } else if (req_buffer.req_method == POST) {
-                    Fornecedor* handled = fornecedor_create(req_buffer.nome_fantasia, req_buffer.cnpj, req_buffer.telefone);
+                    if (req_buffer.req_method == GET) {
+                        Fornecedor* handled = fornecedor_get(req_buffer.cnpj);
 
-                    if (handled == NULL) {
-                        error(&response, 500, "Internal Server Error");
-                    } else {
-                        create_response(&response, handled);
+                        if (handled != NULL) {
+                            create_response(&response, handled);
+                        } else {
+                            error(&response, 404, "Fornecedor não encontrado");
+                        }
+                    } else if (req_buffer.req_method == POST) {
+                        Fornecedor* handled = fornecedor_create(req_buffer.nome_fantasia, req_buffer.cnpj, req_buffer.telefone);
+
+                        if (handled == NULL) {
+                            error(&response, 500, "Internal Server Error");
+                        } else {
+                            create_response(&response, handled);
+                        }
                     }
+
+                    write(com_fifo, database, sizeof(Database));
                 }
             }
-            write(com_fifo, database, sizeof(Database));
+
             write(new_socket, &response, sizeof(forn_res));
             return EXIT_SUCCESS;
         }
