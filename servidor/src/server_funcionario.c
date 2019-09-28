@@ -72,33 +72,37 @@ int main(int argc, char const *argv[]){
             memset(&req_buffer, 0, sizeof(func_req));
             memset(&response, 0, sizeof(func_res));
 
-            read(com_pipe[READ], database, sizeof(Database));
-            int v = read(new_socket, &req_buffer, sizeof(func_req));
+            int req_size = read(new_socket, &req_buffer, sizeof(func_req));
 
-            if (v < 0) {
+            if (req_size < 0) {
                 strcpy(response.error_message, "Internal Server Error");
                 response.status = 500;
             } else {
-                if (req_buffer.req_method == GET) {
-                    Funcionario* handled = funcionario_get(req_buffer.cpf);
-                    
-                    if (handled != NULL) {
-                        create_response(&response, handled);
-                    } else {
-                        error(&response, 404, "Usuário não encontrado");
-                    }
-                }else if (req_buffer.req_method == POST) {
-                    Funcionario* handled = funcionario_create(req_buffer.nome, req_buffer.departamento, req_buffer.cpf, req_buffer.idade);
+                if (req_size == sizeof(func_req)) {
+                    read(com_pipe[READ], database, sizeof(Database));
 
-                    if (handled == NULL) {
-                        error(&response, 500, "Internal Server Error");
-                    } else {
-                        create_response(&response, handled);
+                    if (req_buffer.req_method == GET) {
+                        Funcionario* handled = funcionario_get(req_buffer.cpf);
+                        
+                        if (handled != NULL) {
+                            create_response(&response, handled);
+                        } else {
+                            error(&response, 404, "Usuário não encontrado");
+                        }
+                    }else if (req_buffer.req_method == POST) {
+                        Funcionario* handled = funcionario_create(req_buffer.nome, req_buffer.departamento, req_buffer.cpf, req_buffer.idade);
+
+                        if (handled == NULL) {
+                            error(&response, 500, "Internal Server Error");
+                        } else {
+                            create_response(&response, handled);
+                        }
                     }
+                    
+                    write(com_pipe[WRITE], database, sizeof(Database));
+                    write(new_socket, &response, sizeof(func_res));
                 }
-                write(new_socket, &response, sizeof(func_res));
             }
-            write(com_pipe[WRITE], database, sizeof(Database));
             return EXIT_SUCCESS;
         }
     }
