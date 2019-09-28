@@ -5,8 +5,8 @@
 #include "../models/includes/fornecedor.h"
 
 int main() {
-    char* nome_fantasia = "Pirocao";
-    char* cnpj = "069242469";
+    char* nome_fantasia = "Frangos Canção";
+    char* cnpj = "18825877000187";
     char* telefone = "30246969";
 
     fornecedor_init();

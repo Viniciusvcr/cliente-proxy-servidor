@@ -5,7 +5,7 @@
 #include "../models/includes/produto.h"
 
 int main(){
-    char* nome = "Drogas";
+    char* nome = "Frango";
     int valor, qtd;
     valor = 100;
     qtd = 200;
