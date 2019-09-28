@@ -15,15 +15,35 @@
 #define WRITE 1
 #define READ 0
 
+#define ERROR = 1
+
 #define Pipe int
 #define PID pid_t
 
 const Funcionario empty = {0};
 
+void log_response(func_res* response) {
+    printf("  Resultado:\n");
+    
+    if (response->status > 200) {
+        printf("    Erro com status: %d\n", response->status);
+        printf("    Razão: %s\n", response->error_message);
+    } else {
+        printf("    Sucesso com status: %d\n", response->status);
+        printf("    Response:\n");
+        printf("      Nome        : %s\n", response->response_model.nome);
+        printf("      Departamento: %s\n", response->response_model.departamento);
+        printf("      CPF         : %s\n", response->response_model.cpf);
+        printf("      Idade       : %d\n", response->response_model.idade);
+        printf("      ID          : %d\n", response->response_model.id);
+    }
+}
+
 void error(func_res* response, unsigned int status, char* message) {
     response->status = status;
     strcpy(response->error_message, message);
     response->response_model = empty;
+    log_response(response);
 }
 
 void create_response(func_res* response, Funcionario* model_response) {
@@ -33,6 +53,7 @@ void create_response(func_res* response, Funcionario* model_response) {
     response->response_model.idade = model_response->idade;
     response->response_model.id = model_response->id;
     response->status = 200;
+    log_response(response);
 }
 
 int main(int argc, char const *argv[]){
@@ -63,7 +84,7 @@ int main(int argc, char const *argv[]){
 
     write(com_pipe[WRITE], database, sizeof(Database));
     printf("Ouvindo na porta %d\n", PORT);
-    while ((new_socket = accept(server_fd, (struct sockaddr *)&address, (socklen_t*)&addrlen)) > 0) {
+    while (((new_socket = accept(server_fd, (struct sockaddr *)&address, (socklen_t*)&addrlen)) > 0)) {
         pid = fork();
         if (pid == 0) {
             func_req req_buffer;
@@ -73,7 +94,6 @@ int main(int argc, char const *argv[]){
             memset(&response, 0, sizeof(func_res));
 
             int req_size = read(new_socket, &req_buffer, sizeof(func_req));
-
             if (req_size < 0) {
                 error(&response, 500, "Internal Server Error");
             } else {
@@ -81,6 +101,7 @@ int main(int argc, char const *argv[]){
                     read(com_pipe[READ], database, sizeof(Database));
 
                     if (req_buffer.req_method == GET) {
+                        printf("\nNova requisição GET:\n");
                         Funcionario* handled = funcionario_get(req_buffer.cpf);
                         
                         if (handled != NULL) {
@@ -89,6 +110,7 @@ int main(int argc, char const *argv[]){
                             error(&response, 404, "Usuário não encontrado");
                         }
                     }else if (req_buffer.req_method == POST) {
+                        printf("\nNova requisição POST:\n");
                         Funcionario* handled = funcionario_create(req_buffer.nome, req_buffer.departamento, req_buffer.cpf, req_buffer.idade);
 
                         if (handled == NULL) {
