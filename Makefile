@@ -44,4 +44,4 @@ test_server_produto:
 	@$(CC) $(TEST)/produto_server_test.c $(SRC_PRODUTO) $(SERVER)/connector.c -o $(OUT)/test_server_produto.out
 
 clean:
-	rm -rf *.out $(OUT)/*.out
+	@rm -rf *.out $(OUT)/*.out
