@@ -106,6 +106,11 @@ int main(int argc, char const *argv[]) {
                     }
                     
                     memcpy(shmem_data, database, sizeof(Database));
+                } else {
+                    printf("\nNova requisição desconhecida:\n");
+                    printf("  Resultado:\n");
+                    printf("    Erro com status: 400\n");
+                    printf("    Razão: Requisição não tem o número de bytes correto para este servidor\n");
                 }
             }
             
