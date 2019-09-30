@@ -1,11 +1,11 @@
 #include "../includes/funcionario.h"
 
 Funcionario* funcionarios_init() {
-    database = (Database*)malloc(sizeof(Database));
-    memset(database, 0, sizeof(Database));
-    database->last_id = 0;
+    database_func = (Database_func*)malloc(sizeof(Database_func));
+    memset(database_func, 0, sizeof(Database_func));
+    database_func->last_id = 0;
 
-    return database->db;
+    return database_func->db;
 }
 
 Funcionario* funcionario_create(char* nome, char* departamento, char* cpf, unsigned int idade) {
@@ -15,17 +15,17 @@ Funcionario* funcionario_create(char* nome, char* departamento, char* cpf, unsig
     strcpy(newFuncionario.departamento, departamento);
     strcpy(newFuncionario.cpf, cpf);
     newFuncionario.idade = idade;
-    newFuncionario.id = database->last_id++;
+    newFuncionario.id = database_func->last_id++;
 
-    database->db[newFuncionario.id] = newFuncionario;
+    database_func->db[newFuncionario.id] = newFuncionario;
 
-    return &database->db[newFuncionario.id];
+    return &database_func->db[newFuncionario.id];
 }
 
 Funcionario* funcionario_get(char* cpf) {
     for (int i = 0; i < MAX_FUNCIONARIOS; i++) {
-        if (strcmp(database->db[i].cpf, cpf) == 0) {
-            return &database->db[i];
+        if (strcmp(database_func->db[i].cpf, cpf) == 0) {
+            return &database_func->db[i];
         }
     }
 

@@ -82,7 +82,7 @@ int main(int argc, char const *argv[]){
         exit(EXIT_FAILURE);
     }
 
-    write(com_pipe[WRITE], database, sizeof(Database));
+    write(com_pipe[WRITE], database_func, sizeof(Database_func));
     printf("Ouvindo na porta %d\n", PORT);
     while (((new_socket = accept(server_fd, (struct sockaddr *)&address, (socklen_t*)&addrlen)) > 0)) {
         pid = fork();
@@ -98,7 +98,7 @@ int main(int argc, char const *argv[]){
                 error(&response, 500, "Internal Server Error");
             } else {
                 if (req_size == sizeof(func_req)) {
-                    read(com_pipe[READ], database, sizeof(Database));
+                    read(com_pipe[READ], database_func, sizeof(Database_func));
 
                     if (req_buffer.req_method == GET) {
                         printf("\nNova requisição GET:\n");
@@ -120,7 +120,7 @@ int main(int argc, char const *argv[]){
                         }
                     }
 
-                    write(com_pipe[WRITE], database, sizeof(Database));
+                    write(com_pipe[WRITE], database_func, sizeof(Database_func));
                 } else {
                     printf("\nNova requisição desconhecida:\n");
                     printf("  Resultado:\n");

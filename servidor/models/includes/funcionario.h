@@ -18,7 +18,7 @@ typedef struct funcionario {
 typedef struct func_database {
     Funcionario db[MAX_FUNCIONARIOS];
     unsigned int last_id;
-}Database;
+}Database_func;
 
 typedef struct func_requisition {
     char nome[STR_MAX];
@@ -38,6 +38,6 @@ Funcionario* funcionarios_init();
 Funcionario* funcionario_create(char* nome, char* departamento, char* cpf, unsigned int idade);
 Funcionario* funcionario_get(char* cpf);
 
-Database* database;
+Database_func* database_func;
 
 #endif
