@@ -28,7 +28,7 @@ servers:
 	@$(CC) $(SRC_PRODUTO) $(SERVER_PRODUTO) -o $(OUT)/$(EXEC_PRODUTO).out
 
 proxy:
-	@$(CC) $(PROXY) $(SERVER_FORNECEDORES) $(SERVER_FUNCIONARIOS) $(SERVER_PRODUTO) -o $(OUT)/proxy.out
+	@$(CC) $(PROXY) $(SRC_FORNECEDORES) $(SRC_FUNCIONARIOS) $(SRC_PRODUTO) $(SERVER)/connector.c -o $(OUT)/proxy.out
 
 test_model_funcionario:
 	@$(CC) $(SRC_FUNCIONARIOS) $(SRC_TEST_FUNCIONARIOS) -o $(OUT)/test_model_funcionario.out

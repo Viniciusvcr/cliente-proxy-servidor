@@ -42,9 +42,9 @@ int main(int argc, char const *argv[]){
 
             switch (req_size) {
                 case sizeof(func_req):
-                    memcpy(&func_req, req, req_size);
+                    memcpy(&func_req, req, sizeof(func_req));
                     create_client_connection(&func_socket, FUNC_PORT, &address, LOCALHOST);
-                    if (send(func_socket, &req, sizeof(forn_req), 0) == -1) {
+                    if (send(func_socket, &func_req, sizeof(func_req), 0) == -1) {
                         perror("Error sending Funcionário message");
                     } else {
                         printf("Message sent\n");
@@ -54,9 +54,9 @@ int main(int argc, char const *argv[]){
                 break;
 
                 case sizeof(forn_req):
-                    memcpy(&forn_req, req, req_size);
-                    create_client_connection(&forn_socket, FUNC_PORT, &address, LOCALHOST);
-                    if (send(forn_socket, &req, sizeof(forn_req), 0) == -1) {
+                    memcpy(&forn_req, req, sizeof(forn_req));
+                    create_client_connection(&forn_socket, FORN_PORT, &address, LOCALHOST);
+                    if (send(forn_socket, &forn_req, sizeof(forn_req), 0) == -1) {
                         perror("Error sending Fornecedor message");
                     } else {
                         printf("Message sent\n");
@@ -66,9 +66,9 @@ int main(int argc, char const *argv[]){
                 break;
 
                 case sizeof(prod_req):
-                    memcpy(&prod_req, req, req_size);
-                    create_client_connection(&prod_socket, FUNC_PORT, &address, LOCALHOST);
-                    if (send(prod_socket, &req, sizeof(forn_req), 0) == -1) {
+                    memcpy(&prod_req, req, sizeof(prod_req));
+                    create_client_connection(&prod_socket, PROD_PORT, &address, LOCALHOST);
+                    if (send(prod_socket, &prod_req, sizeof(prod_req), 0) == -1) {
                         perror("Error sending Produto message");
                     } else {
                         printf("Message sent\n");
