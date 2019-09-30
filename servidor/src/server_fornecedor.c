@@ -79,7 +79,7 @@ int main(int argc, char const *argv[]){
 
     printf("Ouvindo na porta %d\n", PORT);
     com_fifo = open(FIFO_FILE, O_RDWR | O_TRUNC);
-    write(com_fifo, database, sizeof(Database));
+    write(com_fifo, database_forn, sizeof(Database_forn));
     while((new_socket = accept(server_fd, (struct sockaddr *)&address, (socklen_t*)&addrlen)) > 0) {
         pid = fork();
         if (pid == 0) {
@@ -95,7 +95,7 @@ int main(int argc, char const *argv[]){
                 error(&response, 500, "Internal Server Error");
             } else {
                 if (req_size == sizeof(forn_req)) {
-                    read(com_fifo, database, sizeof(Database));
+                    read(com_fifo, database_forn, sizeof(Database_forn));
 
                     if (req_buffer.req_method == GET) {
                         printf("\nNova requisição GET:\n");
@@ -117,7 +117,7 @@ int main(int argc, char const *argv[]){
                         }
                     }
 
-                    write(com_fifo, database, sizeof(Database));
+                    write(com_fifo, database_forn, sizeof(Database_forn));
                 } else {
                     printf("\nNova requisição desconhecida:\n");
                     printf("  Resultado:\n");

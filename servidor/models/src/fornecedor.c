@@ -1,11 +1,11 @@
 #include "../includes/fornecedor.h"
 
 Fornecedor* fornecedor_init() {
-    database = (Database*)malloc(sizeof(Database));
-    memset(database, 0, sizeof(Database));
-    database->last_id = 0;
+    database_forn = (Database_forn*)malloc(sizeof(Database_forn));
+    memset(database_forn, 0, sizeof(Database_forn));
+    database_forn->last_id = 0;
 
-    return database->db;
+    return database_forn->db;
 }
 
 Fornecedor* fornecedor_create(char* nome_fantasia, char* cnpj, char* telefone) {
@@ -14,17 +14,17 @@ Fornecedor* fornecedor_create(char* nome_fantasia, char* cnpj, char* telefone) {
     strcpy(newFornecedor.nome_fantasia, nome_fantasia);
     strcpy(newFornecedor.cnpj, cnpj);
     strcpy(newFornecedor.telefone, telefone);
-    newFornecedor.id = database->last_id++;
+    newFornecedor.id = database_forn->last_id++;
 
-    database->db[newFornecedor.id] = newFornecedor;
+    database_forn->db[newFornecedor.id] = newFornecedor;
 
-    return &database->db[newFornecedor.id];
+    return &database_forn->db[newFornecedor.id];
 }
 
 Fornecedor* fornecedor_get(char* cnpj) {
     for (int i = 0; i < MAX_FORNECEDORES; i++) {
-        if (strcmp(database->db[i].cnpj, cnpj) == 0) {
-            return &database->db[i];
+        if (strcmp(database_forn->db[i].cnpj, cnpj) == 0) {
+            return &database_forn->db[i];
         }
     }
 

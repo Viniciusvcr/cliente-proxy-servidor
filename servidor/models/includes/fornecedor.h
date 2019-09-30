@@ -17,7 +17,7 @@ typedef struct fornecedor {
 typedef struct forn_database {
     Fornecedor db[MAX_FORNECEDORES];
     unsigned int last_id;
-}Database;
+}Database_forn;
 
 typedef struct forn_requisition {
     char nome_fantasia[STR_MAX];
@@ -36,6 +36,6 @@ Fornecedor* fornecedor_init();
 Fornecedor* fornecedor_create(char* nome_fantasia, char* cnpj, char* telefone);
 Fornecedor* fornecedor_get(char* cnpj);
 
-Database* database;
+Database_forn* database_forn;
 
 #endif
