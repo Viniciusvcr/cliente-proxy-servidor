@@ -16,10 +16,6 @@
 
 #define PORT 8082
 
-#define WRITE 1
-#define READ 0
-
-#define Pipe int
 #define PID pid_t
 
 #define SHMEM_FILE "shmfile"
@@ -27,10 +23,27 @@ const unsigned int SHMEM_SIZE = sizeof(Database);
 
 const Produto empty = {0};
 
+void log_response(prod_res* response) {
+    printf("  Resultado:\n");
+    
+    if (response->status > 200) {
+        printf("    Erro com status: %d\n", response->status);
+        printf("    Razão: %s\n", response->error_message);
+    } else {
+        printf("    Sucesso com status: %d\n", response->status);
+        printf("    Response:\n");
+        printf("      Nome                 : %s\n", response->response_model.nome);
+        printf("      Valor                : %d\n", response->response_model.valor);
+        printf("      Quantidade em estoque: %d\n", response->response_model.qdtEstoque);
+        printf("      ID                   : %d\n", response->response_model.id);
+    }
+}
+
 void error(prod_res* response, unsigned int status, char* message) {
     response->status = status;
     strcpy(response->error_message, message);
     response->response_model = empty;
+    log_response(response);
 }
 
 void create_response(prod_res* response, Produto* model_response) {
@@ -39,6 +52,7 @@ void create_response(prod_res* response, Produto* model_response) {
     response->response_model.valor = model_response->valor;
     response->response_model.id = model_response->id;
     response->status = 200;
+    log_response(response);
 }
 
 int main(int argc, char const *argv[]) {
@@ -89,13 +103,16 @@ int main(int argc, char const *argv[]) {
                     memcpy(database, shmem_data, sizeof(Database));
                     
                     if (req_buffer.req_method == GET) {
+                        printf("\nNova requisição GET:\n");
                         Produto* handled = produto_get(req_buffer.id);
+
                         if (handled != NULL) {
                             create_response(&response, handled);
                         } else {
                             error(&response, 404, "Produto não encontrado");
                         }
                     } else if (req_buffer.req_method == POST) {
+                        printf("\nNova requisição POST:\n");
                         Produto* handled = produto_create(req_buffer.nome, req_buffer.valor, req_buffer.qtdEstoque);
 
                         if (handled == NULL) {

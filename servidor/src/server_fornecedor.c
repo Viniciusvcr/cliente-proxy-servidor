@@ -20,10 +20,27 @@
 
 const Fornecedor empty = {0};
 
+void log_response(forn_res* response) {
+    printf("  Resultado:\n");
+    
+    if (response->status > 200) {
+        printf("    Erro com status: %d\n", response->status);
+        printf("    Razão: %s\n", response->error_message);
+    } else {
+        printf("    Sucesso com status: %d\n", response->status);
+        printf("    Response:\n");
+        printf("      Nome Fantasia: %s\n", response->response_model.nome_fantasia);
+        printf("      CNPJ         : %s\n", response->response_model.cnpj);
+        printf("      Telefone     : %s\n", response->response_model.telefone);
+        printf("      ID           : %d\n", response->response_model.id);
+    }
+}
+
 void error(forn_res* response, unsigned int status, char* message) {
     response->status = status;
     strcpy(response->error_message, message);
     response->response_model = empty;
+    log_response(response);
 }
 
 void create_response(forn_res* response, Fornecedor* model_response) {
@@ -32,6 +49,7 @@ void create_response(forn_res* response, Fornecedor* model_response) {
     strcpy(response->response_model.telefone, model_response->telefone);
     response->response_model.id = model_response->id;
     response->status = 200;
+    log_response(response);
 }
 
 int main(int argc, char const *argv[]){
@@ -80,6 +98,7 @@ int main(int argc, char const *argv[]){
                     read(com_fifo, database, sizeof(Database));
 
                     if (req_buffer.req_method == GET) {
+                        printf("\nNova requisição GET:\n");
                         Fornecedor* handled = fornecedor_get(req_buffer.cnpj);
 
                         if (handled != NULL) {
@@ -88,6 +107,7 @@ int main(int argc, char const *argv[]){
                             error(&response, 404, "Fornecedor não encontrado");
                         }
                     } else if (req_buffer.req_method == POST) {
+                        printf("\nNova requisição POST:\n");
                         Fornecedor* handled = fornecedor_create(req_buffer.nome_fantasia, req_buffer.cnpj, req_buffer.telefone);
 
                         if (handled == NULL) {
