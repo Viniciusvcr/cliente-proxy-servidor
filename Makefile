@@ -27,7 +27,7 @@ servers:
 	@$(CC) $(SRC_FORNECEDOR) $(SERVER_FORNECEDORES) -o $(OUT)/server_fornecedores.out
 	@$(CC) $(SRC_PRODUTO) $(SERVER_PRODUTO) -o $(OUT)/$(EXEC_PRODUTO).out
 
-proxy: $(PROXY)
+proxy:
 	@$(CC) $(PROXY) $(SERVER_FORNECEDORES) $(SERVER_FUNCIONARIOS) $(SERVER_PRODUTO) -o $(OUT)/proxy.out
 
 test_model_funcionario:
@@ -50,3 +50,5 @@ test_server_produto:
 
 clean:
 	@rm -rf *.out $(OUT)/*.out
+
+.PHONY: proxy
