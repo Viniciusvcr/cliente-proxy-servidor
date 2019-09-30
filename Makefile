@@ -5,6 +5,8 @@ MODELS=servidor/models/src
 SERVER=servidor/src
 TEST=servidor/test
 
+PROXY=proxy/proxy.c
+
 SRC_FUNCIONARIOS=$(MODELS)/funcionario.c
 SRC_PRODUTO=$(MODELS)/produto.c
 SRC_FORNECEDOR=$(MODELS)/fornecedor.c
@@ -24,6 +26,9 @@ servers:
 	@$(CC) $(SRC_FUNCIONARIOS) $(SERVER_FUNCIONARIOS) -o $(OUT)/$(EXEC_FUNCIONARIOS).out
 	@$(CC) $(SRC_FORNECEDOR) $(SERVER_FORNECEDORES) -o $(OUT)/server_fornecedores.out
 	@$(CC) $(SRC_PRODUTO) $(SERVER_PRODUTO) -o $(OUT)/$(EXEC_PRODUTO).out
+
+proxy: $(PROXY)
+	@$(CC) $(PROXY) $(SERVER_FORNECEDORES) $(SERVER_FUNCIONARIOS) $(SERVER_PRODUTO) -o $(OUT)/proxy.out
 
 test_model_funcionario:
 	@$(CC) $(SRC_FUNCIONARIOS) $(SRC_TEST_FUNCIONARIOS) -o $(OUT)/test_model_funcionario.out
