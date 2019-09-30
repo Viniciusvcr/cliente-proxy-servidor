@@ -1,6 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h> 
+#include <semaphore.h>
+#include <sys/types.h>
+#include <sys/ipc.h> 
+#include <sys/shm.h> 
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <sys/wait.h>
@@ -17,6 +21,9 @@
 
 #define Pipe int
 #define PID pid_t
+
+#define SHMEM_FILE "shmfile"
+const unsigned int SHMEM_SIZE = sizeof(Database);
 
 const Produto empty = {0};
 
@@ -36,11 +43,23 @@ void create_response(prod_res* response, Produto* model_response) {
 
 int main(int argc, char const *argv[]) {
     PID pid;
+    key_t shmem_key;
+    int shmem_id;
     int server_fd, new_socket, opt = 1;
     struct sockaddr_in address;
     int addrlen = sizeof(address);
 
     printf("Iniciando servidor de produtos...\n");
+
+    shmem_key = ftok(SHMEM_FILE, 65);
+    if ((shmem_id = shmget(shmem_key, SHMEM_SIZE, 0666 | IPC_CREAT)) < 0) {
+        perror("Erro ao criar memória compartilhada");
+        exit(EXIT_FAILURE);
+    } else {
+        printf("\tMemória Compartilhada criada!\n");
+    }
+
+    Database* shmem_data = (Database*) shmat(shmem_id, NULL, 0); 
 
     create_server_connection(&server_fd, PORT, &opt, &address);
 
@@ -67,6 +86,8 @@ int main(int argc, char const *argv[]) {
                 error(&response, 500, "Internal Server Error");
             } else {
                 if (req_size == sizeof(prod_req)) {
+                    memcpy(database, shmem_data, sizeof(Database));
+                    
                     if (req_buffer.req_method == GET) {
                         Produto* handled = produto_get(req_buffer.id);
                         if (handled != NULL) {
@@ -83,6 +104,8 @@ int main(int argc, char const *argv[]) {
                             create_response(&response, handled);
                         }
                     }
+                    
+                    memcpy(shmem_data, database, sizeof(Database));
                 }
             }
             
@@ -90,4 +113,7 @@ int main(int argc, char const *argv[]) {
             return EXIT_SUCCESS;
         }
     }
+
+    shmdt(shmem_data);
+    shmctl(shmem_id, IPC_RMID, NULL);
 }
