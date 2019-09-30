@@ -19,7 +19,7 @@
 #define PID pid_t
 
 #define SHMEM_FILE "shmfile"
-const unsigned int SHMEM_SIZE = sizeof(Database);
+const unsigned int SHMEM_SIZE = sizeof(Database_prod);
 
 const Produto empty = {0};
 
@@ -73,7 +73,7 @@ int main(int argc, char const *argv[]) {
         printf("\tMemória Compartilhada criada!\n");
     }
 
-    Database* shmem_data = (Database*) shmat(shmem_id, NULL, 0); 
+    Database_prod* shmem_data = (Database_prod*) shmat(shmem_id, NULL, 0); 
 
     create_server_connection(&server_fd, PORT, &opt, &address);
 
@@ -100,7 +100,7 @@ int main(int argc, char const *argv[]) {
                 error(&response, 500, "Internal Server Error");
             } else {
                 if (req_size == sizeof(prod_req)) {
-                    memcpy(database, shmem_data, sizeof(Database));
+                    memcpy(database_prod, shmem_data, sizeof(Database_prod));
                     
                     if (req_buffer.req_method == GET) {
                         printf("\nNova requisição GET:\n");
@@ -122,7 +122,7 @@ int main(int argc, char const *argv[]) {
                         }
                     }
                     
-                    memcpy(shmem_data, database, sizeof(Database));
+                    memcpy(shmem_data, database_prod, sizeof(Database_prod));
                 } else {
                     printf("\nNova requisição desconhecida:\n");
                     printf("  Resultado:\n");

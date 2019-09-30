@@ -1,32 +1,32 @@
 #include "../includes/produto.h"
 
 Produto* produtos_init() {
-    database = (Database*)malloc(sizeof(Database));
-    memset(database, 0, sizeof(Database));
+    database_prod = (Database_prod*)malloc(sizeof(Database_prod));
+    memset(database_prod, 0, sizeof(Database_prod));
     for (int i = 0; i < MAX_PRODUTOS; i++) {
-        database->db[i].id = -1;
+        database_prod->db[i].id = -1;
     }
-    database->last_id = 0;
+    database_prod->last_id = 0;
 
-    return database->db;
+    return database_prod->db;
 }
 
 Produto* produto_create(char* nome, unsigned int valor, unsigned int qtdEstoque){
     Produto newProduto;
 
     strcpy(newProduto.nome, nome);
-    newProduto.id = database->last_id++;
+    newProduto.id = database_prod->last_id++;
     newProduto.qdtEstoque = qtdEstoque;
     newProduto.valor = valor;
 
-    database->db[newProduto.id] = newProduto;
-    return &database->db[newProduto.id];
+    database_prod->db[newProduto.id] = newProduto;
+    return &database_prod->db[newProduto.id];
 }
 
 Produto* produto_get(unsigned int id){
     for(int i = 0; i<MAX_PRODUTOS;i++){
-        if(database->db[i].id == id){
-            return &database->db[i];
+        if(database_prod->db[i].id == id){
+            return &database_prod->db[i];
         }
     }
 

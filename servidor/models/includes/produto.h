@@ -17,7 +17,7 @@ typedef struct produto {
 typedef struct prod_database {
     Produto db[MAX_PRODUTOS];
     unsigned int last_id;
-}Database;
+}Database_prod;
 
 typedef struct prod_requisition {
     char nome[STR_MAX];
@@ -37,6 +37,6 @@ Produto* produtos_init();
 Produto* produto_create(char* nome,unsigned int valor, unsigned int qtdEstoque);
 Produto* produto_get(unsigned int id);
 
-Database* database;
+Database_prod* database_prod;
 
 #endif
