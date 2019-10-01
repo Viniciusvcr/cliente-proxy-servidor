@@ -25,7 +25,7 @@ SRC_TEST_FORNECEDOR=$(TEST)/test_fornecedor.c
 servers: 
 	@$(CC) $(SRC_FUNCIONARIOS) $(SERVER_FUNCIONARIOS) -o $(OUT)/$(EXEC_FUNCIONARIOS).out
 	@$(CC) $(SRC_FORNECEDOR) $(SERVER_FORNECEDORES) -o $(OUT)/server_fornecedores.out
-	@$(CC) $(SRC_PRODUTO) $(SERVER_PRODUTO) -o $(OUT)/$(EXEC_PRODUTO).out
+	@$(CC) $(SRC_PRODUTO) $(SERVER_PRODUTO) -pthread -o $(OUT)/$(EXEC_PRODUTO).out
 
 proxy:
 	@$(CC) $(PROXY) $(SRC_FORNECEDORES) $(SRC_FUNCIONARIOS) $(SRC_PRODUTO) $(SERVER)/connector.c -o $(OUT)/proxy.out

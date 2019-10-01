@@ -21,6 +21,9 @@
 #define SHMEM_FILE "shmfile"
 const unsigned int SHMEM_SIZE = sizeof(Database_prod);
 
+sem_t semaphore;
+#define PSHARED 1
+
 const Produto empty = {0};
 
 void log_response(prod_res* response) {
@@ -73,6 +76,13 @@ int main(int argc, char const *argv[]) {
         printf("\tMemória Compartilhada criada!\n");
     }
 
+    if (sem_init(&semaphore, PSHARED, 1) < 0) {
+        perror("Erro ao inicializar o semáforo");
+        exit(EXIT_FAILURE);
+    } else {
+        printf("\tSemáforo inicializado\n");
+    }
+
     Database_prod* shmem_data = (Database_prod*) shmat(shmem_id, NULL, 0); 
 
     create_server_connection(&server_fd, PORT, &opt, &address);
@@ -100,7 +110,9 @@ int main(int argc, char const *argv[]) {
                 error(&response, 500, "Internal Server Error");
             } else {
                 if (req_size == sizeof(prod_req)) {
+                    sem_wait(&semaphore);
                     memcpy(database_prod, shmem_data, sizeof(Database_prod));
+                    sem_post(&semaphore);
                     
                     if (req_buffer.req_method == GET) {
                         printf("\nNova requisição GET:\n");
@@ -122,7 +134,9 @@ int main(int argc, char const *argv[]) {
                         }
                     }
                     
+                    sem_wait(&semaphore);
                     memcpy(shmem_data, database_prod, sizeof(Database_prod));
+                    sem_post(&semaphore);
                 } else {
                     printf("\nNova requisição desconhecida:\n");
                     printf("  Resultado:\n");
