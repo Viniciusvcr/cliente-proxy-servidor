@@ -40,41 +40,49 @@ int main(int argc, char const *argv[]){
             int req_size = read(new_socket, req, MAX_REQ_SIZE);
             int func_socket, forn_socket, prod_socket;
 
+            printf("  \nNova mensagem recebida.\n");
+
             switch (req_size) {
                 case sizeof(func_req):
                     memcpy(&func_req, req, sizeof(func_req));
                     create_client_connection(&func_socket, FUNC_PORT, &address, LOCALHOST);
                     if (send(func_socket, &func_req, sizeof(func_req), 0) == -1) {
-                        perror("Error sending Funcionário message");
+                        perror("Erro ao enviar a mensagem ao servidor 'Funcionário'.");
                     } else {
-                        printf("Message sent\n");
+                        printf("  Encaminhando mensagem para o servidor 'Funcionário'.\n");
                     }
                     read(func_socket, &func_res, sizeof(func_res));
                     write(new_socket, &func_res, sizeof(func_res));
+                    
+                    printf("  Encaminhando resposta para o cliente.\n");
                 break;
 
                 case sizeof(forn_req):
                     memcpy(&forn_req, req, sizeof(forn_req));
                     create_client_connection(&forn_socket, FORN_PORT, &address, LOCALHOST);
                     if (send(forn_socket, &forn_req, sizeof(forn_req), 0) == -1) {
-                        perror("Error sending Fornecedor message");
+                        perror("Erro ao enviar a mensagem ao servidor 'Fornecedor'.");
                     } else {
-                        printf("Message sent\n");
+                        printf("  Encaminhando mensagem para o servidor 'Fornecedor'.\n");
                     }
                     read(forn_socket, &forn_res, sizeof(forn_res));
                     write(new_socket, &forn_res, sizeof(forn_res));
+
+                    printf("  Encaminhando resposta para o cliente.\n");
                 break;
 
                 case sizeof(prod_req):
                     memcpy(&prod_req, req, sizeof(prod_req));
                     create_client_connection(&prod_socket, PROD_PORT, &address, LOCALHOST);
                     if (send(prod_socket, &prod_req, sizeof(prod_req), 0) == -1) {
-                        perror("Error sending Produto message");
+                        perror("Erro ao enviar a mensagem ao servidor 'Produtos'.");
                     } else {
-                        printf("Message sent\n");
+                        printf("  Encaminhando mensagem para o servidor 'Produtos'.\n");
                     }
                     read(prod_socket, &prod_res, sizeof(prod_res));
                     write(new_socket, &prod_res, sizeof(prod_res));
+
+                    printf("  Encaminhando resposta para o cliente.\n");
                 break;
 
                 default: 
