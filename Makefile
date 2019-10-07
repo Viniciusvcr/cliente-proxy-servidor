@@ -4,6 +4,7 @@ OUT=out
 MODELS=servidor/models/src
 SERVER=servidor/src
 TEST=servidor/test
+CLIENT=client
 
 PROXY=proxy/proxy.c
 
@@ -30,6 +31,9 @@ servers:
 proxy:
 	@$(CC) $(PROXY) $(SRC_FORNECEDORES) $(SRC_FUNCIONARIOS) $(SRC_PRODUTO) $(SERVER)/connector.c -o $(OUT)/proxy.out
 
+client:
+	@$(CC) $(CLIENT)/client.c $(SRC_FORNECEDORES) $(SRC_FUNCIONARIOS) $(SRC_PRODUTO) $(SERVER)/connector.c -o $(OUT)/client.out
+
 test_model_funcionario:
 	@$(CC) $(SRC_FUNCIONARIOS) $(SRC_TEST_FUNCIONARIOS) -o $(OUT)/test_model_funcionario.out
 
@@ -51,4 +55,4 @@ test_server_produto:
 clean:
 	@rm -rf *.out $(OUT)/*.out
 
-.PHONY: proxy
+.PHONY: proxy client
