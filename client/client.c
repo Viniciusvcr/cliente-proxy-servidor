@@ -88,35 +88,120 @@ void handle_funcionario () {
 
             break;
         }
-        create_client_connection(&socket_fd, PORT, &serv_addr, HOST);
 
-        if (send(socket_fd, &req, sizeof(req), 0) == -1) {
-            perror("\nErro ao enviar a mensagem");
-        } else {
-            printf("\nMensagem enviada\n");
-        }
-        
-        func_res get;
-        read(socket_fd, &get, sizeof(func_res));
-        printf("\nResposta do servidor: \n");
-        if (get.status == 200) {
-            printf("  Nome        : %s\n", get.response_model.nome);
-            printf("  Departamento: %s\n", get.response_model.departamento);
-            printf("  CPF         : %s\n", get.response_model.cpf);
-            printf("  Idade       : %d\n", get.response_model.idade);
-            printf("  ID          : %d\n\n", get.response_model.id);
-        } else {
-            printf("  Status de erro: %d\n", get.status);
-            printf("  Mensagem: %s\n\n", get.error_message);
-        }
+        if (escolha) {
+            create_client_connection(&socket_fd, PORT, &serv_addr, HOST);
 
-        fflush(stdin);
-        printf("Pressione ENTER para continuar\n");
-        getchar();
+            if (send(socket_fd, &req, sizeof(req), 0) == -1) {
+                perror("\nErro ao enviar a mensagem");
+            } else {
+                printf("\nMensagem enviada\n");
+            }
+            
+            func_res get;
+            read(socket_fd, &get, sizeof(func_res));
+            printf("\nResposta do servidor: \n");
+            if (get.status == 200) {
+                printf("  Nome        : %s\n", get.response_model.nome);
+                printf("  Departamento: %s\n", get.response_model.departamento);
+                printf("  CPF         : %s\n", get.response_model.cpf);
+                printf("  Idade       : %d\n", get.response_model.idade);
+                printf("  ID          : %d\n\n", get.response_model.id);
+            } else {
+                printf("  Status de erro: %d\n", get.status);
+                printf("  Mensagem      : %s\n\n", get.error_message);
+            }
+
+            fflush(stdin);
+            printf("Pressione ENTER para continuar\n");
+            getchar();
+        } else {
+            system("clear");
+        }
     } while (escolha);
 }
 
 void handle_fornecedor() {
+    int escolha, socket_fd;
+    char nome[STR_MAX], cnpj[STR_MAX], telefone[STR_MAX];
+    struct sockaddr_in serv_addr;
+    forn_req req;
+
+
+    do {
+        memset(&req, 0, sizeof(forn_req));
+        system("clear");
+
+        printf("Escolha um das opções:\n");
+        printf("[1] Cadastrar Fornecedor\n");
+        printf("[2] Buscar Fornecedor\n");
+        printf("[0] Voltar\n");
+
+        scanf("%d", &escolha);
+
+        switch (escolha) {
+            case 1:
+                // get_info_funcionario(nome, departamento, cpf, &idade);
+                getchar();
+                printf("Insira nome do novo fornecedor: ");
+                fgets(nome, STR_MAX, stdin);
+                printf("Insira o CNPJ do novo fornecedor: ");
+                fgets(cnpj, STR_MAX, stdin);
+                printf("Insira o telefone do novo fornecedor: ");
+                fgets(telefone, STR_MAX, stdin);
+
+                cut_str(nome);
+                cut_str(cnpj);
+                cut_str(telefone);
+
+                strcpy(req.cnpj, cnpj);
+                strcpy(req.nome_fantasia, nome);
+                strcpy(req.telefone, telefone);
+
+                req.req_method = POST;
+            break;
+            
+            case 2:
+                printf("Insira o CNPJ do fornecedor: ");
+                getchar();
+                fgets(cnpj, STR_MAX, stdin);
+                cut_str(cnpj);
+
+                strcpy(req.cnpj, cnpj);
+                req.req_method = GET;
+
+            break;
+        }
+        
+        if (escolha) {
+            create_client_connection(&socket_fd, PORT, &serv_addr, HOST);
+
+            if (send(socket_fd, &req, sizeof(req), 0) == -1) {
+                perror("\nErro ao enviar a mensagem");
+            } else {
+                printf("\nMensagem enviada\n");
+            }
+            
+            forn_res get;
+            read(socket_fd, &get, sizeof(forn_res));
+            printf("\nResposta do servidor: \n");
+            if (get.status == 200) {
+                printf("  Nome    : %s\n", get.response_model.nome_fantasia);
+                printf("  CNPJ    : %s\n", get.response_model.cnpj);
+                printf("  Telefone: %s\n", get.response_model.telefone);
+                printf("  ID      : %d\n\n", get.response_model.id);
+            } else {
+                printf("  Status de erro: %d\n", get.status);
+                printf("  Mensagem      : %s\n\n", get.error_message);
+            }
+
+            fflush(stdin);
+            printf("Pressione ENTER para continuar\n");
+            getchar();
+        } else {
+            system("clear");
+        }
+    } while (escolha);
 
 } 
 
