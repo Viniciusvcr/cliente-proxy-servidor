@@ -43,7 +43,7 @@ void handle_funcionario () {
         memset(&req, 0, sizeof(func_req));
         system("clear");
 
-        printf("Escolha um das opções:\n");
+        printf("Escolha um das opções:\n\n");
         printf("[1] Cadastrar Funcionário\n");
         printf("[2] Buscar Funcionário\n");
         printf("[0] Voltar\n");
@@ -132,7 +132,7 @@ void handle_fornecedor() {
         memset(&req, 0, sizeof(forn_req));
         system("clear");
 
-        printf("Escolha um das opções:\n");
+        printf("Escolha um das opções:\n\n");
         printf("[1] Cadastrar Fornecedor\n");
         printf("[2] Buscar Fornecedor\n");
         printf("[0] Voltar\n");
@@ -217,7 +217,7 @@ void handle_produto() {
         memset(&req, 0, sizeof(prod_req));
         system("clear");
 
-        printf("Escolha um das opções:\n");
+        printf("Escolha um das opções:\n\n");
         printf("[1] Cadastrar Produto\n");
         printf("[2] Buscar Produto\n");
         printf("[0] Voltar\n");
@@ -291,7 +291,7 @@ int main() {
     int escolha;
 
     do {
-        printf("Selecione o modelo:\n");
+        printf("Selecione o modelo:\n\n");
         printf("[1] Funcionário\n");
         printf("[2] Fornecedor\n");
         printf("[3] Produto\n");
