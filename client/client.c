@@ -206,7 +206,85 @@ void handle_fornecedor() {
 } 
 
 void handle_produto() {
+    int escolha, socket_fd;
+    unsigned int valor, qntd_estoque, id;
+    char nome[STR_MAX];
+    struct sockaddr_in serv_addr;
+    prod_req req;
 
+
+    do {
+        memset(&req, 0, sizeof(prod_req));
+        system("clear");
+
+        printf("Escolha um das opções:\n");
+        printf("[1] Cadastrar Produto\n");
+        printf("[2] Buscar Produto\n");
+        printf("[0] Voltar\n");
+
+        scanf("%d", &escolha);
+
+        switch (escolha) {
+            case 1:
+                // get_info_funcionario(nome, departamento, cpf, &idade);
+                getchar();
+                printf("Insira nome do novo produto: ");
+                fgets(nome, STR_MAX, stdin);
+                printf("Insira o valor do novo produto: ");
+                scanf("%d", &valor);
+                printf("Insira o quantidade do novo produto: ");
+                scanf("%d", &qntd_estoque);
+
+                cut_str(nome);
+
+                strcpy(req.nome, nome);
+                req.valor = valor;
+                req.qtdEstoque = qntd_estoque;
+
+                req.req_method = POST;
+
+                getchar();
+            break;
+            
+            case 2:
+                printf("Insira o ID do produto: ");
+                scanf("%d", &id);
+
+                req.req_method = GET;
+
+                getchar();
+            break;
+        }
+        
+        if (escolha) {
+            create_client_connection(&socket_fd, PORT, &serv_addr, HOST);
+
+            if (send(socket_fd, &req, sizeof(req), 0) == -1) {
+                perror("\nErro ao enviar a mensagem");
+            } else {
+                printf("\nMensagem enviada\n");
+            }
+            
+            prod_res get;
+            read(socket_fd, &get, sizeof(prod_res));
+            printf("\nResposta do servidor: \n");
+            if (get.status == 200) {
+                printf("  Nome                 : %s\n", get.response_model.nome);
+                printf("  Valor                : %d\n", get.response_model.valor);
+                printf("  Quantidade em Estoque: %d\n", get.response_model.qdtEstoque);
+                printf("  ID                   : %d\n\n", get.response_model.id);
+            } else {
+                printf("  Status de erro: %d\n", get.status);
+                printf("  Mensagem      : %s\n\n", get.error_message);
+            }
+
+            fflush(stdin);
+            printf("Pressione ENTER para continuar\n");
+            getchar();
+        } else {
+            system("clear");
+        }
+    } while (escolha);
 }
 
 int main() {
