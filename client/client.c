@@ -250,6 +250,7 @@ void handle_produto() {
                 printf("Insira o ID do produto: ");
                 scanf("%d", &id);
 
+                req.id = id;
                 req.req_method = GET;
 
                 getchar();
