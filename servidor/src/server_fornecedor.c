@@ -59,7 +59,7 @@ int main(int argc, char const *argv[]){
     struct sockaddr_in address;
     int addrlen = sizeof(address);
 
-    printf("Iniciando servidor de funcionários...\n");
+    printf("Iniciando servidor de fornecedores...\n");
 
     remove(FIFO_FILE);
     if (mkfifo(FIFO_FILE, 0666) < 0) {
