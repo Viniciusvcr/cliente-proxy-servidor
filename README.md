@@ -2,6 +2,8 @@
 
 Repositório do trabalho de Sistemas Operacionais (UEM - 2019)
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 ## Trabalho de Sistemas Operacionais
 
 - Linguagens
@@ -14,10 +16,10 @@ Repositório do trabalho de Sistemas Operacionais (UEM - 2019)
         - Pode-se cadastrar e recuperar Produtos vendidos no supermercado
         - Pode-se cadastrar e recuperar os Fornecedores do supermercado
         - Cada um dos modelos (Funcionário, Produto e Fornecedor) serão armazenados em memória, e em servidores diferentes
-        - Cada servidor usará um processo filho, criado por Fork para acessar sua base de dados
-        - O modelo Funcionário usará Pipe
-        - O modelo Produto usará Memória compartilhada e Semáforo
-        - O modelo Fornecedor usará FIFO
+        - Cada servidor usa um processo filho, criado por Fork para acessar sua base de dados
+        - O modelo Funcionário usa Pipe
+        - O modelo Produto usa Memória compartilhada e Semáforo
+        - O modelo Fornecedor usa FIFO
 
 - Desenvolvedores
     - [Caio Eduardo Kikuti Machado](https://github.com/Caiokikuti)
